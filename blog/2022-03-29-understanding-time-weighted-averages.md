@@ -9,11 +9,10 @@ description:
   with weighted averages. You will also learn more about their specific use
   cases.
 keywords:
-  - sql
-  - jit
-  - performance
+  - datascience
   - timeseries
   - database
+  - statistics
 image: /img/blog/2022-03-29/cover.jpg
 tags: [statistics, timeseries, analytics, data]
 ---
