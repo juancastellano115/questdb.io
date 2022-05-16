@@ -67,17 +67,25 @@ questdb.exe [start|stop|status|install|remove] \
 | Option | Description                                                                                                                                                                                                          |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `-d`   | Expects a `dir` directory value which is a folder that will be used as QuestDB's root directory. For more information and the default values, see the [default root](#default-root-directory) section below.         |
-| `-t`   | Expects a `tag` string value which will be as a tag for the service. This option allows users to run several QuestDB services and manage them separately. If this option omitted, the default tag will be `questdb`. |
+| `-t`   | Expects a `tag` string value which will be as a tag for the service. This option allows users to run several QuestDB services and manage them separately. If this option is omitted, the default tag will be `questdb`. |
 | `-f`   | Force re-deploying the Web Console. Without this option, the Web Console is cached and deployed only when missing.                                                                                                   |
 | `-j`   | **Windows only!** This option allows to specify a path to `JAVA_HOME`.                                                                                                                                               |
 
 :::info
 
-When running multiple QuestDB sertvices, a tag must be used to disambiguate
+When running multiple QuestDB services, a tag must be used to disambiguate
 between services for `start` and `stop` commands. There will be conflicting
 ports and root directories if only the tag flag is specified when starting
-multiple services. Each new service should have it's own config file or should
+multiple services. Each new service should have its own config file or should
 be started with separate port and root directory options.
+
+:::
+
+:::info
+
+When running QuestDB as Windows service you can check status in both:
+- Windows Event Viewer - look for events with "QuestDB" source in Windows Logs | Application .
+- service log file - `$dataDir\log\service-%Y-%m-%dT%H-%M-%S.txt` (default is `C:\Windows\System32\qdbroot\log\service-%Y-%m-%dT%H-%M-%S.txt` )
 
 :::
 
@@ -128,7 +136,7 @@ questdb.exe start [-d dir] [-f] [-j JAVA_HOME] [-t tag]
 
 #### Default root directory
 
-By default, QuestDB's [root directory](/docs/concept/root-directory-structure/)
+By default, QuestDB's [root directory](/docs/concept/root-directory-structure)
 will be the following:
 
 <!-- prettier-ignore-start -->
@@ -165,7 +173,7 @@ $HOME/.questdb
 
 
 ```shell
-C:\Windows\System32\questdb
+C:\Windows\System32\qdbroot
 ```
 
 </TabItem>

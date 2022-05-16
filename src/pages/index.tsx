@@ -10,6 +10,8 @@ import Chevron from "@theme/Chevron"
 import Layout from "../theme/Layout"
 import useWindowWidth from "@theme/useWindowWidth"
 import SvgImage from "../components/SvgImage"
+import ActionCard from "../components/ActionCard"
+import Subscribe from "../components/Subscribe"
 
 import doCss from "../css/index/docker.module.css"
 import feCss from "../css/index/feature.module.css"
@@ -19,6 +21,7 @@ import juCss from "../css/index/jumbotron.module.css"
 import meCss from "../css/index/menu.module.css"
 import shCss from "../css/index/showcase.module.css"
 import usCss from "../css/index/usp.module.css"
+import footerCss from "../css/index/footer.module.css"
 import prCss from "../css/property.module.css"
 import seCss from "../css/section.module.css"
 
@@ -30,10 +33,12 @@ import PythonLogo from "../assets/img/pages/index/integrations/python.svg"
 import PandasLogo from "../assets/img/pages/index/integrations/pandas.svg"
 import InfluxdataLogo from "../assets/img/pages/index/integrations/influxdata.svg"
 import TableauLogo from "../assets/img/pages/index/integrations/tableau.svg"
-import MetabaseLogo from "../assets/img/pages/index/integrations/metabase.svg"
+import PlotlyLogo from "../assets/img/pages/index/integrations/plotly.svg"
+import MindsdbLogo from "../assets/img/pages/index/integrations/mindsdb.svg"
+import CubeLogo from "../assets/img/pages/index/integrations/cube.svg"
 import DockerLogo from "../assets/img/pages/index/docker.svg"
-import PgwireLogo from "../assets/img/pages/index/pgwire.svg"
 import FossIcon from "../assets/img/pages/index/foss.svg"
+import SubscribeIcon from "../assets/img/pages/index/subscribeIcon.svg"
 import SearchTimeIcon from "../assets/img/pages/index/searchTime.svg"
 import SliceTimeIcon from "../assets/img/pages/index/sliceTime.svg"
 import NavigateTimeIcon from "../assets/img/pages/index/navigateTime.svg"
@@ -79,7 +84,7 @@ const FeatureTabs = () => {
               size="small"
               variant={opened === "digital" ? "primary" : "tertiary"}
             >
-              Digital transformation
+              Simplicity
             </Button>
             <Button
               className={meCss.menu__button}
@@ -87,7 +92,7 @@ const FeatureTabs = () => {
               size="small"
               variant={opened === "realtime" ? "primary" : "tertiary"}
             >
-              Real-time insights
+              Performance
             </Button>
             <Button
               className={meCss.menu__button}
@@ -95,7 +100,7 @@ const FeatureTabs = () => {
               size="small"
               variant={opened === "integration" ? "primary" : "tertiary"}
             >
-              Enterprise integration
+              Open Source
             </Button>
           </div>
 
@@ -105,11 +110,13 @@ const FeatureTabs = () => {
                 [meCss["menu__panel--active"]]: opened === "digital",
               })}
             >
-              <p className={prCss.property}>Reduce hardware costs</p>
-              <p className={prCss.property}>Contain operational complexity</p>
-              <p className={prCss.property}>Decrease development costs</p>
-              <p className={prCss.property}>Cloud native (AWS, Azure, GCP)</p>
-              <p className={prCss.property}>On-premises or embedded</p>
+              <p className={prCss.property}>Query with SQL</p>
+              <p className={prCss.property}>Deploy via Docker or binaries</p>
+              <p className={prCss.property}>Interactive web console</p>
+              <p className={prCss.property}>
+                Postgres and InfluxDB line protocols
+              </p>
+              <p className={prCss.property}>Cloud-native or on-premises</p>
             </div>
 
             <div
@@ -117,10 +124,11 @@ const FeatureTabs = () => {
                 [meCss["menu__panel--active"]]: opened === "realtime",
               })}
             >
-              <p className={prCss.property}>Streaming</p>
-              <p className={prCss.property}>Operational analytics / OLAP</p>
-              <p className={prCss.property}>Monitoring and observability</p>
-              <p className={prCss.property}>Predictive analytics</p>
+              <p className={prCss.property}>High-throughput ingestion</p>
+              <p className={prCss.property}>Optimized SQL queries</p>
+              <p className={prCss.property}>Real-time streaming</p>
+              <p className={prCss.property}>Lower infrastructure costs</p>
+              <p className={prCss.property}>Less operational complexity</p>
             </div>
 
             <div
@@ -128,16 +136,18 @@ const FeatureTabs = () => {
                 [meCss["menu__panel--active"]]: opened === "integration",
               })}
             >
-              <p className={prCss.property}>Active directory</p>
-              <p className={prCss.property}>High-performance replication</p>
-              <p className={prCss.property}>High-availability</p>
-              <p className={prCss.property}>Clustering</p>
-              <p className={prCss.property}>Enterprise security</p>
-              <p className={prCss.property}>Postgres compatible</p>
+              <p className={prCss.property}>Apache License 2.0</p>
+              <p className={prCss.property}>Thriving developer community</p>
+              <p className={prCss.property}>Transparent development</p>
+              <p className={prCss.property}>Popular open source integrations</p>
+              <p className={prCss.property}>Embedded in Java applications</p>
             </div>
 
-            <Button className={meCss.menu__cta} to="/enterprise">
-              Enterprise &gt;
+            <Button
+              className={meCss.menu__cta}
+              to="https://github.com/questdb/questdb#try-questdb"
+            >
+              Get Started &gt;
             </Button>
           </div>
         </div>
@@ -145,6 +155,23 @@ const FeatureTabs = () => {
     </section>
   )
 }
+
+const integrations: Array<{
+  label: string
+  image: React.ElementType
+  title: string
+}> = [
+  { image: PgLogo, title: "Postgres logo", label: "Postgres" },
+  { image: GrafanaLogo, title: "Grafana logo", label: "Grafana" },
+  { image: KafkaLogo, title: "Kafka logo", label: "Kafka" },
+  { image: PythonLogo, title: "Python logo", label: "Python" },
+  { image: PandasLogo, title: "Pandas logo", label: "Pandas" },
+  { image: InfluxdataLogo, title: "Telegraf logo", label: "Telegraf" },
+  { image: TableauLogo, title: "Tableau logo", label: "Tableau" },
+  { image: MindsdbLogo, title: "MindsDB logo", label: "MindsDB" },
+  { image: CubeLogo, title: "Cube logo", label: "Cube" },
+  { image: PlotlyLogo, title: "PlotlyLogo logo", label: "Plotly" },
+]
 
 const Integration = () => (
   <section
@@ -165,38 +192,15 @@ const Integration = () => (
     </h2>
 
     <div className={inCss.integration}>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<PgLogo />} title="Postgres logo" />
-        Postgres
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<GrafanaLogo />} title="Grafana logo" />
-        Grafana
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<KafkaLogo />} title="Kafka logo" />
-        Kafka
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<PythonLogo />} title="Python logo" />
-        Python
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<PandasLogo />} title="Pandas logo" />
-        Pandas
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<InfluxdataLogo />} title="Telegraf logo" />
-        Telegraf
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<TableauLogo />} title="Tableau logo" />
-        Tableau
-      </p>
-      <p className={inCss.integration__item}>
-        <SvgImage image={<MetabaseLogo />} title="Metabase logo" />
-        Metabase
-      </p>
+      {integrations.map(({ label, image, title }, index: number) => {
+        const Image = image
+        return (
+          <div key={index} className={inCss.integration__item}>
+            <SvgImage image={<Image />} title={title} />
+            {label}
+          </div>
+        )
+      })}
     </div>
   </section>
 )
@@ -366,34 +370,46 @@ const Cards = () => (
         )}
       >
         <div className={feCss.feature}>
-          <h3 className={feCss.feature__header}>DevOps monitoring</h3>
+          <h3 className={feCss.feature__header}>
+            DevOps, monitoring and observability
+          </h3>
           <p className={feCss.feature__content}>
-            Collect metrics and events from your infrastructure (CPU, memory,
-            networks, etc.) and get real-time visibility into your entire stack.
+            Collect CPU, memory and storage metrics from your infrastructure and
+            get real-time visibility into your entire stack.
           </p>
         </div>
 
         <div className={feCss.feature}>
           <h3 className={feCss.feature__header}>Financial market data</h3>
           <p className={feCss.feature__content}>
-            Store market data to identify historical trends and correlations
-            using statistical methods and generate trading signals.
+            Store market tick data to identify historical trends, find
+            correlations and analyze trades in real-time. Build aggregated views
+            across multiple venues and efficiently compute live order books.
+          </p>
+        </div>
+
+        <div className={feCss.feature}>
+          <h3 className={feCss.feature__header}>Network traffic analysis</h3>
+          <p className={feCss.feature__content}>
+            Collect sFlow or other network traffic metadata to run analytics and
+            detect anomalies in real-time.
           </p>
         </div>
 
         <div className={feCss.feature}>
           <h3 className={feCss.feature__header}>Connected devices</h3>
           <p className={feCss.feature__content}>
-            Capture, store and respond to data from sensors at any resolution in
-            industrial applications.
+            Capture, store and respond to sensor data and telemetry at any
+            resolution in industrial or machine-to-machine applications.
           </p>
         </div>
 
         <div className={feCss.feature}>
           <h3 className={feCss.feature__header}>Application metrics</h3>
           <p className={feCss.feature__content}>
-            Empower your application users to track and visualize logs, API
-            calls, and any application activity in real-time.
+            Empower application developers and UX teams to track and visualize
+            user behavior data, API calls, data latency, and other application
+            events in real-time.
           </p>
         </div>
 
@@ -405,14 +421,6 @@ const Cards = () => (
             Use QuestDB with popular Python frameworks and tools for leveraging
             anomaly detection algorithms, machine learning libraries,
             statistical analysis with Pandas, or Jupyter notebooks.
-          </p>
-        </div>
-
-        <div className={feCss.feature}>
-          <h3 className={feCss.feature__header}>Integrated data</h3>
-          <p className={feCss.feature__content}>
-            Pull together all your application, device, and infrastructure data
-            for a complete, 360º view of all aspects of your business.
           </p>
         </div>
       </div>
@@ -447,10 +455,8 @@ const Console = () => {
       >
         Interactive console to import data (drag and drop) and start querying
         right away. Check our{" "}
-        <a href="/docs/reference/client/web-console/">
-          Web Console documentation
-        </a>{" "}
-        to get started.
+        <a href="/docs/develop/web-console">Web Console documentation</a> to get
+        started.
       </p>
 
       <img
@@ -461,43 +467,37 @@ const Console = () => {
         width={600}
       />
 
-      <div
-        className={clsx(
-          seCss.section__footer,
-          seCss["section__footer--console"],
-        )}
-      >
-        <div className={clsx(flCss.flashy, flCss["flashy--primary"])}>
-          <SvgImage image={<PgwireLogo />} title="Postgres logo" />
-          <h3 className={flCss.flashy__title}>Postgres compatibility</h3>
-          <p className={flCss.flashy__content}>
-            Interact with QuestDB using the Postgres layer and any tool that
-            connects to it.
-          </p>
-        </div>
+      <div className={footerCss.cards}>
+        <ActionCard
+          icon={<FossIcon />}
+          title="Join our developer community"
+          description="QuestDB is open source. Follow us on Twitter, star our GitHub repo, and join our developer community on Slack!"
+        >
+          <a
+            className={flCss.flashy__link}
+            href={customFields.githubUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Go to GitHub&nbsp;&nbsp;&gt;
+          </a>
+          <a className={flCss.flashy__link} href={customFields.slackUrl}>
+            Join Slack&nbsp;&nbsp;&gt;
+          </a>
+        </ActionCard>
 
-        <div className={flCss.flashy}>
-          <SvgImage image={<FossIcon />} title="Antenna" />
-          <h3 className={flCss.flashy__title}>Open source</h3>
-          <p className={flCss.flashy__content}>
-            QuestDB is open source. Follow us on GitHub. Watch the repo to get
-            notified of further releases and new features!
-          </p>
-
-          <div className={flCss.flashy__links}>
-            <a
-              className={flCss.flashy__link}
-              href={customFields.githubUrl}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Go to GitHub&nbsp;&nbsp;&gt;
-            </a>
-            <a className={flCss.flashy__link} href={customFields.slackUrl}>
-              Join Slack&nbsp;&nbsp;&gt;
-            </a>
-          </div>
-        </div>
+        <ActionCard
+          title="Subscribe to our newsletter"
+          description="Stay up to date with all things QuestDB"
+          icon={<SubscribeIcon />}
+          skin="primary"
+        >
+          <Subscribe
+            placeholder="Email address"
+            submitButtonVariant="tertiary"
+            provider="newsletter"
+          />
+        </ActionCard>
       </div>
     </section>
   )
@@ -720,26 +720,22 @@ const QueryScroller = () => {
   )
 }
 
-const Home = () => {
-  const title = "QuestDB | Time series data, faster"
-
-  return (
-    <Layout
-      canonical=""
-      description={customFields.description}
-      title={title}
-      replaceTitle
-    >
-      <Top />
-      <Customers nbElements={6} />
-      <Usp />
-      <Integration />
-      <FeatureTabs />
-      <QueryScroller />
-      <Cards />
-      <Console />
-    </Layout>
-  )
-}
+const Home = () => (
+  <Layout
+    canonical=""
+    description={customFields.description}
+    title="QuestDB | Time series data, faster"
+    replaceTitle
+  >
+    <Top />
+    <Customers nbElements={6} />
+    <Usp />
+    <Integration />
+    <FeatureTabs />
+    <QueryScroller />
+    <Cards />
+    <Console />
+  </Layout>
+)
 
 export default Home

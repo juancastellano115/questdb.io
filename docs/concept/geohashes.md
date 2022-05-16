@@ -12,8 +12,8 @@ including hints on converting from latitude and longitude, inserting via SQL,
 InfluxDB line protocol, and via Java embedded API.
 
 To facilitate working with this data type,
-[spatial functions](/docs/reference/function/spatial/) and
-[operators](/docs/reference/operators/spatial/) have been added to help with
+[spatial functions](/docs/reference/function/spatial) and
+[operators](/docs/reference/operators/spatial) have been added to help with
 filtering and generating data.
 
 ## Geohash description
@@ -292,7 +292,7 @@ columns within the query **must be indexed**.
 | 2021-09-02T14:20:09.280980Z | device_3  | e   | u33dr01d |
 
 For more information on the use of this operator, see the
-[spatial operators](/docs/reference/operators/spatial/) reference.
+[spatial operators](/docs/reference/operators/spatial) reference.
 
 ## Java embedded usage
 
@@ -340,7 +340,7 @@ Invoking the method above will return one of the following:
 - `ColumnType.GEOLONG`
 
 For more information and detailed examples of using table readers and writers,
-see the [Java API documentation](/docs/reference/api/java-embedded/).
+see the [Java API documentation](/docs/reference/api/java-embedded).
 
 ## InfluxDB line protocol
 
@@ -353,7 +353,7 @@ inserts in this way;
 CREATE TABLE tracking (ts timestamp, geohash geohash(8c));
 ```
 
-2. Inserts via InfluxDB line protocol using the `geohash` field:
+2. Insert via InfluxDB line protocol using the `geohash` field:
 
 ```bash
 tracking geohash="46swgj10"
@@ -379,6 +379,36 @@ geo_data geohash="46swgj10r88k"
 # Equivalent to truncating to this value:
 geo_data geohash="46swgj10"
 ```
+
+## CSV import
+
+Geohashes may also be inserted via [CSV import](/docs/guides/importing-data/).
+In order to perform inserts in this way;
+
+1. Create table with columns of geohash type beforehand:
+
+```questdb-sql
+CREATE TABLE tracking (ts timestamp, geohash geohash(8c));
+```
+
+Note that you may skip this step, if you specify column types in the `schema`
+JSON object.
+
+2. Import the CSV file via REST API using the `geohash` field:
+
+```bash
+curl -F data=@tracking.csv 'http://localhost:9000/imp?name=tracking'
+```
+
+The `tracking.csv` file's contents may look like the following:
+
+```csv
+ts,geohash
+17/01/2022 01:02:21,46swgj10
+```
+
+Just like InfluxDB line protocol, CSV import supports geohash strings only, so
+the same restrictions apply.
 
 ## Postgres
 

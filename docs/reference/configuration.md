@@ -7,7 +7,7 @@ This page describes methods for configuring QuestDB server settings.
 Configuration can be set either:
 
 - In the `server.conf` configuration file available in the
-  [root directory](/docs/concept/root-directory-structure/)
+  [root directory](/docs/concept/root-directory-structure)
 - Using environment variables
 
 When a key is absent from both the configuration file and the environment
@@ -79,10 +79,10 @@ docker run -p 9000:9000 \
 
 This publishes the following ports:
 
-- `-p 9000:9000` - [REST API](/docs/reference/api/rest/) and
-  [Web Console](/docs/reference/web-console/)
-- `-p 9009:9009` - [InfluxDB line protocol](/docs/reference/api/ilp/overview/)
-- `-p 8812:8812` - [Postgres wire protocol](/docs/reference/api/postgres/)
+- `-p 9000:9000` - [REST API](/docs/reference/api/rest) and
+  [Web Console](/docs/develop/web-console)
+- `-p 9009:9009` - [InfluxDB line protocol](/docs/reference/api/ilp/overview)
+- `-p 8812:8812` - [Postgres wire protocol](/docs/reference/api/postgres)
 - `-p 9003:9003` -
   [Min health server and Prometheus metrics](#minimal-http-server)
 
@@ -151,7 +151,7 @@ in the format `n<unit>`, where `<unit>` can be one of the following:
 
 For example:
 
-```bash title="Setting maximum send buffer size to 2MB per TCP socket"
+```ini title="Setting maximum send buffer size to 2MB per TCP socket"
 http.net.connection.sndbuf=2m
 ```
 
@@ -166,17 +166,6 @@ configuration) every other subsystem.
 | shared.worker.affinity    |         | Comma-delimited list of CPU ids, one per thread specified in `shared.worker.count`. By default, threads have no CPU affinity.                                |
 | shared.worker.haltOnError | false   | Toggle whether worker should stop on error.                                                                                                                  |
 
-#### Load balancing
-
-This section describes configuration settings for the distribution of work by
-writer threads in a QuestDB instance.
-
-| Property                          | Default | Description                                                                                                                               |
-| --------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| cairo.max.uncommitted.rows        | 500000  | Maximum number of uncommitted rows per table, when the number of pending rows exceeds this parameter on a table, a commit will be issued. |
-| line.tcp.commit.timeout           | 1000    | Pending rows will be committed after `line.tcp.commit.timeout` milliseconds inactivity on each table.                                     |
-| line.tcp.maintenance.job.interval | 30000   | Maximum amount of time (in milliseconds) between maintenance jobs, these will commit any uncommitted data on inactive tables.             |
-
 ### Minimal HTTP server
 
 This server runs embedded in a QuestDB instance by default and enables health
@@ -187,7 +176,7 @@ code of `200` unless the QuestDB process dies.
 
 Port `9003` also provides a `/metrics` endpoint with Prometheus metrics exposed.
 Examples of how to use the min server and Prometheus endpoint can be found on
-the [health monitoring page](/docs/operations/health-monitoring/).
+the [health monitoring page](/docs/operations/health-monitoring).
 
 :::
 
@@ -205,7 +194,7 @@ the [health monitoring page](/docs/operations/health-monitoring/).
 
 This section describes configuration settings for the Web Console available by
 default on port `9000`. For details on the use of this component, refer to the
-[web console documentation](/docs/reference/web-console/) page.
+[web console documentation](/docs/develop/web-console) page.
 
 | Property                                     | Default        | Description                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | -------------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -267,6 +256,8 @@ QuestDB.
 | Property                                       | Default           | Description                                                                                                                                                                                                              |
 | ---------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | query.timeout.sec                              | 60                | A global timeout (in seconds) for long-running queries.                                                                                                                                                                  |
+| cairo.max.uncommitted.rows                     | 500000            | Maximum number of uncommitted rows per table, when the number of pending rows exceeds this parameter on a table, a commit will be issued.                                                                                |
+| cairo.commit.lag                               | 300000            | Expected maximum time lag for out-of-order rows in milliseconds.                                                                                                                                                         |
 | cairo.sql.copy.root                            | null              | Input root directory for CSV imports via `copy` SQL.                                                                                                                                                                     |
 | cairo.sql.backup.root                          | null              | Output root directory for backups.                                                                                                                                                                                       |
 | cairo.sql.backup.dir.datetime.format           | null              | Date format for backup directory.                                                                                                                                                                                        |
@@ -275,7 +266,7 @@ QuestDB.
 | cairo.snapshot.instance.id                     | empty string      | Instance id to be included into disk snapshots.                                                                                                                                                                          |
 | cairo.snapshot.recovery.enabled                | true              | When `false`, disables snapshot recovery on database start.                                                                                                                                                              |
 | cairo.root                                     | db                | Directory for storing db tables and metadata. This directory is inside the server root directory provided at startup.                                                                                                    |
-| cairo.commit.mode                              | nosync            | How changes to table are flushed to disk upon commit. Choices: `nosync`, `async` (flush call schedules update, returns immediately), `sync` (waits for flush to complete).                                               |
+| cairo.commit.mode                              | nosync            | How changes to table are flushed to disk upon commit. Choices: `nosync`, `async` (flush call schedules update, returns immediately), `sync` (waits for flush on the appended column files to complete).                  |
 | cairo.create.as.select.retry.count             | 5                 | Number of types table creation or insertion will be attempted.                                                                                                                                                           |
 | cairo.default.map.type                         | fast              | Type of map used. Options: `fast` (speed at the expense of storage), `compact`.                                                                                                                                          |
 | cairo.default.symbol.cache.flag                | false             | When `true`, symbol values will be cached on Java heap.                                                                                                                                                                  |
@@ -329,7 +320,7 @@ QuestDB.
 | cairo.sql.double.cast.scale                    | 12                | Maximum number of decimal places that types cast as doubles have.                                                                                                                                                        |
 | cairo.sql.float.cast.scale                     | 4                 | Maximum number of decimal places that types cast as floats have.                                                                                                                                                         |
 | cairo.sql.copy.formats.file                    | /text_loader.json | Name of file with user's set of date and timestamp formats.                                                                                                                                                              |
-| cairo.sql.jit.mode                             | off               | JIT compilation for SQL queries. May be enabled by setting this value to `scalar`.                                                                                                                                       |
+| cairo.sql.jit.mode                             | on                | JIT compilation for SQL queries. May be disabled by setting this value to `off`.                                                                                                                                         |
 | cairo.date.locale                              | en                | The locale to handle date types.                                                                                                                                                                                         |
 | cairo.timestamp.locale                         | en                | The locale to handle timestamp types.                                                                                                                                                                                    |
 | cairo.o3.column.memory.size                    | 16M               | Memory page size per column for O3 operations. Please be aware O3 will use 2x of this RAM per column.                                                                                                                    |
@@ -340,6 +331,20 @@ QuestDB.
 | cairo.writer.misc.append.page.size             | 4k                | mmap page size for mapping small files, default value is OS page size (4k Linux, 64K windows, 16k OSX M1). Overriding this rounds to the nearest (greater) multiple of the OS page size.                                 |
 | cairo.writer.data.index.key.append.page.size   | 512k              | mmap page size for appending index key data; key data is number of distinct symbol values times 4 bytes.                                                                                                                 |
 
+### Parallel SQL execution
+
+This section describes settings that can affect parallelism level of SQL
+execution and therefore performance.
+
+| Property                               | Default | Description                                                                                                                                                                |
+| -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cairo.sql.parallel.filter.enabled      | true    | Enable or disable parallel SQL filter execution. JIT compilation takes place only when this setting is enabled.                                                            |
+| cairo.page.frame.shard.count           | 4       | Number of shards for both dispatch and reduce queues. Shards reduce queue contention between SQL statements that are executed concurrently.                                |
+| cairo.page.frame.reduce.queue.capacity | 64      | Reduce queue is used for data processing and should be large enough to supply tasks for worker threads (shared worked pool).                                               |
+| cairo.page.frame.rowid.list.capacity   | 256     | Row ID list initial capacity for each slot of the reduce queue. Larger values reduce memory allocation rate, but increase minimal RSS size.                                |
+| cairo.page.frame.column.list.capacity  | 16      | Column list capacity for each slot of the reduce queue. Used by JIT-compiled filter functions. Larger values reduce memory allocation rate, but increase minimal RSS size. |
+| cairo.page.frame.task.pool.capacity    | 4       | Initial object pool capacity for local reduce tasks. These tasks are used to avoid blocking query execution when the reduce queue is full.                                 |
+
 ### Postgres wire protocol
 
 This section describes configuration settings for client connections using
@@ -349,7 +354,7 @@ PostgresSQL wire protocol.
 | -------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | pg.enabled                       | true         | Configuration for enabling or disabling the Postres interface.                                                                                                                                    |
 | pg.net.bind.to                   | 0.0.0.0:8812 | IP address and port of Postgres wire protocol server. 0 means that the server will bind to all network interfaces. You can specify IP address of any individual network interface on your system. |
-| pg.net.connection.limit          | 10           | The number of simultaneous PostgreSQL connections to the server. This value is intended to control server memory consumption.                                                                     |
+| pg.net.connection.limit          | 10           | The number of simultaneous Postgres connections to the server. This value is intended to control server memory consumption.                                                                       |
 | pg.net.connection.timeout        | 300000       | Connection idle timeout in milliseconds. Connections are closed by the server when this timeout lapses.                                                                                           |
 | pg.net.connection.rcvbuf         | -1           | Maximum send buffer size on each TCP socket. If value is -1 socket send buffer remains unchanged from OS default.                                                                                 |
 | pg.net.connection.sndbuf         | -1           | Maximum receive buffer size on each TCP socket. If value is -1, the socket receive buffer remains unchanged from OS default.                                                                      |
@@ -385,26 +390,30 @@ line protocol.
 
 #### TCP specific settings
 
-| Property                          | Default      | Description                                                                                                                                   |
-| --------------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| line.tcp.enabled                  | true         | Enable or disable line protocol over TCP.                                                                                                     |
-| line.tcp.net.bind.to              | 0.0.0.0:9009 | IP address of the network interface to bind listener to and port. By default, TCP receiver listens on all network interfaces.                 |
-| line.tcp.net.connection.limit     | 10           | The number of simultaneous connections to the server. This value is intended to control server memory consumption.                            |
-| line.tcp.net.connection.timeout   | 300000       | Connection idle timeout in milliseconds. Connections are closed by the server when this timeout lapses.                                       |
-| line.tcp.net.connection.hint      | false        | Windows specific flag to overcome OS limitations on TCP backlog size                                                                          |
-| line.tcp.net.connection.rcvbuf    | -1           | Maximum buffer receive size on each TCP socket. If value is -1, the socket receive buffer remains unchanged from OS default.                  |
-| line.tcp.auth.db.path             |              | Path which points to the authentication db file.                                                                                              |
-| line.tcp.connection.pool.capacity | 64           | The maximum amount of pooled connections this interface may have.                                                                             |
-| line.tcp.timestamp                | n            | Input timestamp resolution. Possible values are `n`, `u`, `ms`, `s` and `h`.                                                                  |
-| line.tcp.msg.buffer.size          | 32768        | Size of the buffer read from queue. Maximum size of write request, regardless of the number of measurements.                                  |
-| line.tcp.max.measurement.size     | 32768        | Maximum size of any measurement.                                                                                                              |
-| line.tcp.writer.queue.size        | 128          | Size of the queue between network I/O and writer jobs. Each queue entry represents a measurement.                                             |
-| line.tcp.writer.worker.count      | 1            | Number of dedicated I/O worker threads assigned to write data to tables. When `0`, the writer jobs will use the shared pool.                  |
-| line.tcp.writer.worker.affinity   |              | Comma-separated list of thread numbers which should be pinned for line protocol ingestion over TCP. CPU core indexes are 0-based.             |
-| line.tcp.io.worker.count          | 0            | Number of dedicated I/O worker threads assigned to parse TCP input. When `0`, the writer jobs will use the shared pool.                       |
-| line.tcp.io.worker.affinity       |              | Comma-separated list of thread numbers which should be pinned for line protocol ingestion over TCP. CPU core indexes are 0-based.             |
-| line.tcp.default.partition.by     | DAY          | Table partition strategy to be used with tables that are created automatically by ILP. Possible values are: `HOUR`, `DAY`, `MONTH` and `YEAR` |
-| line.tcp.disconnect.on.error      | true         | Disconnect TCP socket that sends malformed messages.                                                                                          |
+| Property                                   | Default      | Description                                                                                                                                                                                                                                           |
+| ------------------------------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| line.tcp.enabled                           | true         | Enable or disable line protocol over TCP.                                                                                                                                                                                                             |
+| line.tcp.net.bind.to                       | 0.0.0.0:9009 | IP address of the network interface to bind listener to and port. By default, TCP receiver listens on all network interfaces.                                                                                                                         |
+| line.tcp.net.connection.limit              | 10           | The number of simultaneous connections to the server. This value is intended to control server memory consumption.                                                                                                                                    |
+| line.tcp.net.connection.timeout            | 300000       | Connection idle timeout in milliseconds. Connections are closed by the server when this timeout lapses.                                                                                                                                               |
+| line.tcp.net.connection.hint               | false        | Windows specific flag to overcome OS limitations on TCP backlog size                                                                                                                                                                                  |
+| line.tcp.net.connection.rcvbuf             | -1           | Maximum buffer receive size on each TCP socket. If value is -1, the socket receive buffer remains unchanged from OS default.                                                                                                                          |
+| line.tcp.auth.db.path                      |              | Path which points to the authentication db file.                                                                                                                                                                                                      |
+| line.tcp.connection.pool.capacity          | 64           | The maximum amount of pooled connections this interface may have.                                                                                                                                                                                     |
+| line.tcp.timestamp                         | n            | Input timestamp resolution. Possible values are `n`, `u`, `ms`, `s` and `h`.                                                                                                                                                                          |
+| line.tcp.msg.buffer.size                   | 32768        | Size of the buffer read from queue. Maximum size of write request, regardless of the number of measurements.                                                                                                                                          |
+| line.tcp.maintenance.job.interval          | 30000        | Maximum amount of time (in milliseconds) between maintenance jobs, these will commit any uncommitted data on inactive tables.                                                                                                                         |
+| line.tcp.min.idle.ms.before.writer.release | 30000        | Minimum amount of idle time before a table writer is released in milliseconds.                                                                                                                                                                        |
+| line.tcp.commit.interval.fraction          | 0.5          | Commit lag fraction. Used to calculate commit interval for the table according to the following formula: `commit_interval = commit_lag ∗ fraction`. The calculated commit interval defines how long uncommitted data will need to remain uncommitted. |
+| line.tcp.commit.interval.default           | 2000         | Default commit interval in milliseconds. Used when no commit lag set for a table or the fraction is set to 0.                                                                                                                                         |
+| line.tcp.max.measurement.size              | 32768        | Maximum size of any measurement.                                                                                                                                                                                                                      |
+| line.tcp.writer.queue.size                 | 128          | Size of the queue between network I/O and writer jobs. Each queue entry represents a measurement.                                                                                                                                                     |
+| line.tcp.writer.worker.count               | 1            | Number of dedicated I/O worker threads assigned to write data to tables. When `0`, the writer jobs will use the shared pool.                                                                                                                          |
+| line.tcp.writer.worker.affinity            |              | Comma-separated list of thread numbers which should be pinned for line protocol ingestion over TCP. CPU core indexes are 0-based.                                                                                                                     |
+| line.tcp.io.worker.count                   | 0            | Number of dedicated I/O worker threads assigned to parse TCP input. When `0`, the writer jobs will use the shared pool.                                                                                                                               |
+| line.tcp.io.worker.affinity                |              | Comma-separated list of thread numbers which should be pinned for line protocol ingestion over TCP. CPU core indexes are 0-based.                                                                                                                     |
+| line.tcp.default.partition.by              | DAY          | Table partition strategy to be used with tables that are created automatically by ILP. Possible values are: `HOUR`, `DAY`, `MONTH` and `YEAR`                                                                                                         |
+| line.tcp.disconnect.on.error               | true         | Disconnect TCP socket that sends malformed messages.                                                                                                                                                                                                  |
 
 #### UDP specific settings
 
@@ -422,6 +431,21 @@ line protocol.
 | line.udp.unicast             | false        | When true, UDP will me unicast. Otherwise multicast.                                                                                                                                                                             |
 | line.udp.timestamp           | n            | Input timestamp resolution. Possible values are `n`, `u`, `ms`, `s` and `h`.                                                                                                                                                     |
 | line.udp.commit.mode         | nosync       | Commit durability. Available values are `nosync`, `sync` and `async`.                                                                                                                                                            |
+
+### Config Validation
+
+The database startup phase checks for configuration issues, such as invalid or
+deprecated settings. Issues may be classified as advisories or errors.
+Advisory issues are [logged](/docs/concept/root-directory-structure#log-directory)
+without causing the database to stop its startup sequence: These are usually
+setting deprecation warnings.
+Configuration errors can optionally cause the database to fail its startup.
+
+| Property                 | Default | Description                                                    |
+|--------------------------|---------|----------------------------------------------------------------|
+| config.validation.strict | false   | When enabled, startup fails if there are configuration errors. |
+
+*We recommended enabling strict validation.*
 
 ### Telemetry
 
@@ -441,9 +465,9 @@ these methods.
 
 ### Configuration file
 
-Logs may be configured via a dedicated configuration file `log-stdout.conf`.
+Logs may be configured via a dedicated configuration file `log.conf`.
 
-```shell title="log-stdout.conf"
+```shell title="log.conf"
 # list of configured writers
 writers=file,stdout
 
@@ -457,8 +481,17 @@ w.stdout.class=io.questdb.log.LogConsoleWriter
 w.stdout.level=INFO,ERROR
 ```
 
-QuestDB will look for `/log-stdout.conf` on the classpath unless this name is
-overridden via a "system" property: `-Dout=/something_else.conf`.
+QuestDB will look for `/log.conf` first in `conf/` directory and then on the
+classpath unless this name is overridden via a command line property:
+`-Dout=/something_else.conf`. QuestDB will create `conf/log.conf` using default
+values If `-Dout` is not set and file doesn't exist .
+
+On Windows log messages go to depending on run mode :
+
+- interactive session - console and `$dataDir\log\stdout-%Y-%m-%dT%H-%M-%S.txt`
+  (default is `.\log\stdout-%Y-%m-%dT%H-%M-%S.txt` )
+- service - `$dataDir\log\service-%Y-%m-%dT%H-%M-%S.txt` (default is
+  `C:\Windows\System32\qdbroot\log\service-%Y-%m-%dT%H-%M-%S.txt` )
 
 ### Environment variables
 
@@ -517,12 +550,12 @@ provided in the `./conf/log.conf` file, in this case in `./questdb-docker.log`.
 QuestDB includes a log writer that sends any message logged at critical level
 (logger.critical("may-day")) to Prometheus Alertmanager over a TCP/IP socket.
 Details for configuring this can be found in the
-[Prometheus documentation](/docs/third-party-tools/prometheus/).
+[Prometheus documentation](/docs/third-party-tools/prometheus).
 
 To configure this writer, add it to the `writers` config alongside other log
 writers.
 
-```bash title="log.conf"
+```ini title="log.conf"
 # Which writers to enable
 writers=stdout,alert
 

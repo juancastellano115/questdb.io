@@ -6,7 +6,7 @@ description: SAMPLE BY SQL keyword reference documentation.
 
 `SAMPLE BY` is used on time series data to summarize large datasets into
 aggregates of homogeneous time chunks as part of a
-[SELECT statement](/docs/reference/sql/select/). Users performing `SAMPLE BY`
+[SELECT statement](/docs/reference/sql/select). Users performing `SAMPLE BY`
 queries on datasets **with missing data** may make use of the
 [FILL](#fill-options) keyword to specify a fill behavior.
 
@@ -18,7 +18,7 @@ SELECT time, avg(price) FROM trades SAMPLE BY 30m
 
 To use `SAMPLE BY`, a table column needs to be specified as a designated
 timestamp. Details about this concept can be found in the
-[designated timestamp](/docs/concept/designated-timestamp/) documentation.
+[designated timestamp](/docs/concept/designated-timestamp) documentation.
 
 :::
 
@@ -56,13 +56,14 @@ SELECT ts, count() FROM trades SAMPLE BY 1h
 
 ## Fill options
 
-The `FILL` keyword is optional and expects a single `fillOption` strategy which
-will be applied to a single aggregate column. The following restrictions apply:
+The `FILL` keyword is optional and expects one or more `fillOption` strategies
+which will be applied to one or more aggregate columns. The following
+restrictions apply:
 
 - Keywords denoting fill strategies may not be combined. Only one option from
   `NONE`, `NULL`, `PREV`, `LINEAR` and constants may be used.
-- `FILL()` does not support a list and therefore can only be applied to a single
-  aggregate column.
+- `LINEAR` strategy is not supported for keyed queries, i.e. queries that
+  contain non-aggregated columns other than the timestamp in the SELECT clause.
 
 | fillOption | Description                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -168,6 +169,22 @@ ALIGN TO ...
 
 :::
 
+### Multiple fill values
+
+`FILL()` accepts a list of values where each value corresponds to a single
+aggregate column in the SELECT clause order:
+
+```questdb-sql
+SELECT min(price), max(price), avg(price), ts
+FROM prices
+SAMPLE BY 1h
+FILL(NULL, 10, PREV);
+```
+
+In the above query `min(price)` aggregate will get `FILL(NULL)` strategy
+applied, `max(price)` will get `FILL(10)`, and `avg(price)` will get
+`FILL(PREV)`.
+
 ## Sample calculation
 
 The default time calculation of sampled groups is an absolute value, in other
@@ -217,7 +234,7 @@ timestamp.
 A time zone may be provided for sampling with calendar alignment. Details on the
 options for specifying time zones with available formats are provided in the
 guide for
-[working with timestamps and time zones](/docs/guides/working-with-timestamps-timezones/).
+[working with timestamps and time zones](/docs/guides/working-with-timestamps-timezones).
 
 ```questdb-sql
 SELECT ts, count() FROM sensors
@@ -254,7 +271,7 @@ In this case, the 24 hour samples begin at `2021-05-31T01:45:00.000000Z`:
 
 The timestamp values output from `SAMPLE BY` queries is in UTC. To have UTC
 values converted to specific timezones the
-[to_timezone() function](/docs/reference/function/date-time/#to_timezone) should
+[to_timezone() function](/docs/reference/function/date-time#to_timezone) should
 be used.
 
 ```questdb-sql
@@ -393,4 +410,3 @@ SELECT ts, avg(quantity*price) FROM trades SAMPLE BY 1d ALIGN TO CALENDAR;
 | --------------------------- | ------ |
 | 2021-05-31T00:00:00.000000Z | 1000.5 |
 | 2021-06-01T00:00:00.000000Z | 8007.2 |
-

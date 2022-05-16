@@ -14,6 +14,7 @@ keywords:
   - cpu
   - questdb
 tags: [performance, simd, benchmark, release]
+image: /img/blog/2020-04-02/banner.png
 ---
 
 import Banner from "@theme/Banner"
@@ -128,7 +129,7 @@ if CPU were fully isolated to run the computations.
 We did not get our hands on CPUs with more memory channels for this test, but if
 you have easy access to 8 or 12-channel servers and would like to benchmark
 QuestDB, we'd love to hear the results. You can
-[download QuestDB](/docs/introduction/) and leave a
+[download QuestDB](/docs/introduction) and leave a
 [comment on github]({@githubUrl@}/issues/146).
 
 ## How we will improve time series data performance

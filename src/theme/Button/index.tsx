@@ -3,14 +3,14 @@ import React, { ReactNode } from "react"
 
 import styles from "./styles.module.css"
 
-type Props = Readonly<{
+export type Props = Readonly<{
   children: ReactNode
   className?: string
   icon?: ReactNode
   href?: string
   newTab: boolean
   onClick?: () => void
-  size: "normal" | "small" | "xsmall"
+  size: "normal" | "small" | "xsmall" | "xxsmall"
   to?: string
   type?: "button" | "submit"
   uppercase: boolean
@@ -39,6 +39,7 @@ const Button = ({
     [styles["button--plain"]]: variant === "plain",
     [styles["button--uppercase"]]: uppercase,
     [styles["button--xsmall"]]: size === "xsmall",
+    [styles["button--xxsmall"]]: size === "xxsmall",
   })
 
   if (href != null) {
