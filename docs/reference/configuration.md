@@ -240,7 +240,7 @@ default on port `9000`. For details on the use of this component, refer to the
 | http.query.cache.enabled                     | true           | Enable or disable the query cache. Cache capacity is `number_of_blocks * number_of_rows`.                                                                                                                                                                                                                                                                                                                                              |
 | http.query.cache.block.count                 | 4              | Number of blocks for the query cache.                                                                                                                                                                                                                                                                                                                                                                                                  |
 | http.query.cache.row.count                   | 16             | Number of rows for the query cache.                                                                                                                                                                                                                                                                                                                                                                                                    |
-| http.security.readonly                       | false          | Forces HTTP read only mode when `true`, which disables commands which modify the data or data structure.                                                                                                                                                                                                                                                                                                                               |
+| http.security.readonly                       | false          | Forces HTTP read only mode when `true`, disabling commands which modify the data or data structure, e.g. INSERT or CREATE TABLE.                                                                                                                                                                                                                                                                                                       |
 | http.security.max.response.rows              | Long.MAX_VALUE | Limit the number of response rows over HTTP.                                                                                                                                                                                                                                                                                                                                                                                           |
 | http.security.interrupt.on.closed.connection | true           | Switch to enable termination of SQL processing if the HTTP connection is closed. The mechanism affects performance so the connection is only checked after `circuit.breaker.throttle` calls are made to the check method. The mechanism also reads from the input stream and discards it since some HTTP clients send this as a keep alive in between requests, `circuit.breaker.buffer.size` denotes the size of the buffer for this. |
 | circuit.breaker.throttle                     | 2000000        | Number of internal iterations such as loops over data before checking if the HTTP connection is still open                                                                                                                                                                                                                                                                                                                             |
@@ -254,7 +254,7 @@ This section describes configuration settings for the Cairo SQL engine in
 QuestDB.
 
 | Property                                       | Default           | Description                                                                                                                                                                                                              |
-|------------------------------------------------|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | query.timeout.sec                              | 60                | A global timeout (in seconds) for long-running queries.                                                                                                                                                                  |
 | cairo.max.uncommitted.rows                     | 500000            | Maximum number of uncommitted rows per table, when the number of pending rows exceeds this parameter on a table, a commit will be issued.                                                                                |
 | cairo.commit.lag                               | 300000            | Expected maximum time lag for out-of-order rows in milliseconds.                                                                                                                                                         |
@@ -344,7 +344,7 @@ This section describes settings that can affect parallelism level of SQL
 execution and therefore performance.
 
 | Property                               | Default | Description                                                                                                                                                                |
-|----------------------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | cairo.sql.parallel.filter.enabled      | true    | Enable or disable parallel SQL filter execution. JIT compilation takes place only when this setting is enabled.                                                            |
 | cairo.page.frame.shard.count           | 4       | Number of shards for both dispatch and reduce queues. Shards reduce queue contention between SQL statements that are executed concurrently.                                |
 | cairo.page.frame.reduce.queue.capacity | 64      | Reduce queue is used for data processing and should be large enough to supply tasks for worker threads (shared worked pool).                                               |
@@ -366,6 +366,7 @@ PostgresSQL wire protocol.
 | pg.net.connection.rcvbuf         | -1           | Maximum send buffer size on each TCP socket. If value is -1 socket send buffer remains unchanged from OS default.                                                                                 |
 | pg.net.connection.sndbuf         | -1           | Maximum receive buffer size on each TCP socket. If value is -1, the socket receive buffer remains unchanged from OS default.                                                                      |
 | pg.net.connection.hint           | false        | Windows specific flag to overcome OS limitations on TCP backlog size                                                                                                                              |
+| pg.security.readonly             | false        | Forces PG Wire read only mode when `true`, disabling commands which modify the data or data structure, e.g. INSERT or CREATE TABLE.                                                               |
 | pg.character.store.capacity      | 4096         | Size of the CharacterStore.                                                                                                                                                                       |
 | pg.character.store.pool.capacity | 64           | Size of the CharacterStore pool capacity .                                                                                                                                                        |
 | pg.connection.pool.capacity      | 64           | The maximum amount of pooled connections this interface may have.                                                                                                                                 |
@@ -445,17 +446,17 @@ line protocol.
 ### Config Validation
 
 The database startup phase checks for configuration issues, such as invalid or
-deprecated settings. Issues may be classified as advisories or errors.
-Advisory issues are [logged](/docs/concept/root-directory-structure#log-directory)
+deprecated settings. Issues may be classified as advisories or errors. Advisory
+issues are [logged](/docs/concept/root-directory-structure#log-directory)
 without causing the database to stop its startup sequence: These are usually
-setting deprecation warnings.
-Configuration errors can optionally cause the database to fail its startup.
+setting deprecation warnings. Configuration errors can optionally cause the
+database to fail its startup.
 
 | Property                 | Default | Description                                                    |
 | ------------------------ | ------- | -------------------------------------------------------------- |
 | config.validation.strict | false   | When enabled, startup fails if there are configuration errors. |
 
-*We recommended enabling strict validation.*
+_We recommended enabling strict validation._
 
 ### Telemetry
 
@@ -486,12 +487,12 @@ writers=file,stdout
 #w.file.location=questdb-debug.log
 #w.file.level=INFO,ERROR
 
-# rolling file writer 
+# rolling file writer
 #w.file.class=io.questdb.log.LogRollingFileWriter
 #w.file.location=${log.dir}/questdb-rolling.log.${date:yyyyMMdd}
 #w.file.level=INFO,ERROR
 #rollEvery accepts: day, hour, minute, month
-#w.file.rollEvery=day  
+#w.file.rollEvery=day
 #w.file.rollSize=1g
 
 # stdout
