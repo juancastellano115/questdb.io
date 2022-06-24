@@ -162,7 +162,7 @@ configuration) every other subsystem.
 
 | Property                  | Default | Description                                                                                                                                                  |
 | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| shared.worker.count       | 2       | Number of worker threads shared across the application. Increasing this number will increase parallelism in the application at the expense of CPU resources. |
+| shared.worker.count       |         | Number of worker threads shared across the application. Increasing this number will increase parallelism in the application at the expense of CPU resources. |
 | shared.worker.affinity    |         | Comma-delimited list of CPU ids, one per thread specified in `shared.worker.count`. By default, threads have no CPU affinity.                                |
 | shared.worker.haltOnError | false   | Toggle whether worker should stop on error.                                                                                                                  |
 
@@ -180,15 +180,15 @@ the [health monitoring page](/docs/operations/health-monitoring).
 
 :::
 
-| Property                        | Default      | Description                                                                                                                                                                    |
-| ------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| http.min.enabled                | true         | Enable or disable Minimal HTTP server.                                                                                                                                         |
-| http.min.bind.to                | 0.0.0.0:9003 | IPv4 address and port of the server. `0` means it will bind to all network interfaces, otherwise the IP address must be one of the existing network adapters.                  |
-| http.min.net.connection.limit   | 4            | Active connection limit                                                                                                                                                        |
-| http.min.net.connection.timeout | 300000       | Idle connection timout is milliseconds.                                                                                                                                        |
-| http.min.net.connection.hint    | false        | Windows specific flag to overcome OS limitations on TCP backlog size                                                                                                           |
-| http.min.worker.count           | -1           | By default, Minimal HTTP server uses shared thread pool for Core count 16 and below. It will use dedicated thread for Core count above 16. Do not set pool size to more than 1 |
-| http.min.worker.affinity        | -1           | Core number to pin thread to                                                                                                                                                   |
+| Property                        | Default      | Description                                                                                                                                                                                                                          |
+| ------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| http.min.enabled                | true         | Enable or disable Minimal HTTP server.                                                                                                                                                                                               |
+| http.min.bind.to                | 0.0.0.0:9003 | IPv4 address and port of the server. `0` means it will bind to all network interfaces, otherwise the IP address must be one of the existing network adapters.                                                                        |
+| http.min.net.connection.limit   | 4            | Active connection limit.                                                                                                                                                                                                             |
+| http.min.net.connection.timeout | 300000       | Idle connection timout is milliseconds.                                                                                                                                                                                              |
+| http.min.net.connection.hint    | false        | Windows specific flag to overcome OS limitations on TCP backlog size.                                                                                                                                                                |
+| http.min.worker.count           |              | By default, minimal HTTP server uses shared thread pool for CPU core count 16 and below. It will use dedicated thread for core count above 16. When `0`, the server will use the shared pool. Do not set pool size to more than `1`. |
+| http.min.worker.affinity        |              | Core number to pin thread to.                                                                                                                                                                                                        |
 
 ### HTTP server
 
@@ -386,8 +386,8 @@ PostgresSQL wire protocol.
 | pg.send.buffer.size              | 1M           | Size of the buffer for sending data.                                                                                                                                                              |
 | pg.date.locale                   | en           | The locale to handle date types.                                                                                                                                                                  |
 | pg.timestamp.locale              | en           | The locale to handle timestamp types.                                                                                                                                                             |
-| pg.worker.count                  | 2            | Number of dedicated worker threads assigned to write data. When `0`, the writer jobs will use the shared pool.                                                                                    |
-| pg.worker.affinity               | -1,-1        | Comma-separated list of thread numbers which should be pinned for Postgres ingestion. Example `line.tcp.worker.affinity=1,2,3`.                                                                   |
+| pg.worker.count                  | 0            | Number of dedicated worker threads assigned to write data. When `0`, the writer jobs will use the shared pool.                                                                                    |
+| pg.worker.affinity               |              | Comma-separated list of thread numbers which should be pinned for Postgres ingestion. Example `pg.worker.affinity=1,2,3`.                                                                         |
 | pg.halt.on.error                 | false        | Whether ingestion should stop upon internal error.                                                                                                                                                |
 
 ### InfluxDB line protocol
