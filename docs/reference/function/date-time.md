@@ -998,7 +998,7 @@ text. These letters are case-sensitive and are used as they are, without any pre
 
 The interpretation of `y` depends on the input digit number:
 
-* If the input year is a two-digit number, the output timestamp assumes the current century, and the format acts as `yy`. 
+* If the input year is a two-digit number, the output timestamp assumes the current century. 
 * Otherwise, the number is interpreted as it is, assuming a four-digit year in the output timestamp.
 
 
