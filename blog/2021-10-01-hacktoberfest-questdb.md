@@ -15,7 +15,7 @@ keywords:
   - hacktoberfest
   - java
 image: /img/blog/2021-10-01/banner-hacktoberfest.png
-tags: [hacktoberfest, github, swag, opensource, community, digitalocean]
+tags: [community, hacktoberfest, github, swag, opensource, digitalocean]
 ---
 
 Hacktoberfest 2021 is starting today! For the first time, QuestDB is
@@ -83,7 +83,7 @@ projects; here are the places to get support and hints from our team:
 - GitHub Discussions:
   [https://github.com/questdb/questdb/discussions](https://github.com/questdb/questdb/discussions)
 - QuestDB Documentation:
-  [https://questdb.io/docs/introduction/](/docs/introduction/)
+  [https://questdb.io/docs](/docs/)
 
 Also, don't forget to follow us on social media to receive the latest updates:
 

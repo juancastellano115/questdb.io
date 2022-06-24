@@ -85,6 +85,19 @@ const config = {
         ],
       },
     ],
+    [ 
+      require.resolve('./plugins/blog'),
+      {
+        remarkPlugins: [variable, math],
+        rehypePlugins: [katex],
+        feedOptions: {
+          type: "all",
+          copyright: customFields.copyright,
+        },
+        showReadingTime: true,
+        blogTagsPostsComponent: require.resolve("./src/theme/BlogListPage/index.tsx"),
+      }
+    ]
   ],
   themeConfig: {
     announcementBar: {
@@ -139,6 +152,10 @@ const config = {
               to: "/enterprise",
             },
             {
+              label: "Use Cases",
+              to: "/use-cases",
+            },
+            {
               label: "Customers",
               to: "/customers",
             },
@@ -172,7 +189,7 @@ const config = {
         },
         {
           label: "Docs",
-          to: "/docs/introduction",
+          to: "/docs",
           position: "left",
         },
         {
@@ -204,6 +221,10 @@ const config = {
               to: "/enterprise",
             },
             {
+              label: "Use Cases",
+              to: "/use-cases",
+            },
+            {
               label: "Customers",
               to: "/customers",
             },
@@ -218,7 +239,7 @@ const config = {
           items: [
             {
               label: "Docs",
-              to: "/docs/introduction",
+              to: "/docs",
             },
             {
               label: "Tutorials",
@@ -291,20 +312,15 @@ const config = {
     [
       "@docusaurus/preset-classic",
       {
+        // blog is enabled through a custom plugin
+        // ./plugins/blog/index.js
+        blog: false,
         docs: {
           remarkPlugins: [variable, math],
           rehypePlugins: [katex],
           sidebarPath: require.resolve("./sidebars.js"),
         },
-        blog: {
-          remarkPlugins: [variable, math],
-          rehypePlugins: [katex],
-          feedOptions: {
-            type: "all",
-            copyright: customFields.copyright,
-          },
-          showReadingTime: true,
-        },
+        
         sitemap: {
           // Removed: https://github.com/ekalinin/sitemap.js/blob/master/CHANGELOG.md#50-breaking-changes
           // cacheTime: 600 * 1000, // 600 sec - cache purge period
