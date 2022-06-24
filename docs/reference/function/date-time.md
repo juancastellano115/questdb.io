@@ -962,63 +962,52 @@ SELECT to_str(ts,'EE'),day_of_week_sunday_first(ts) FROM myTable;
 
 ## Date and Timestamp format
 
-Format is a combination of letters from table below combined with arbitrary
-text. Format letters are case-sensitive and are used as is (e.g. without any
-prefix)
+The date and teimestamp format is a combination of letters from the table below and arbitrary
+text. These letters are case-sensitive and are used as they are, without any prefix.
 
-| Letter | Date or Time Component                                         | Presentation       | Examples                              |
-|--------|----------------------------------------------------------------|--------------------|---------------------------------------|
-| `G`    | Era designator                                                 | Text               | AD                                    |
-| `y`    | `y` single digit or greedy year, acts as `yy`, `yyy` or `yyyy` | Year               | 1996; 96; 999; 3                      |
-| `yy`   | two digit year of the current century                          | Year               | 96                                    |
-| `yyy`  | three digit year of the current millennium                     | Year               | 999                                   |
-| `yyyy` | four digit year of the current millennium                      | Year               | 1996                                  |
-| `M`    | Month in year                                                  | Month              | July; Jul; 07                         |
-| `w`    | Week in year                                                   | Number             | 27                                    |
-| `W`    | Week in month                                                  | Number             | 2                                     |
-| `D`    | Day in year                                                    | Number             | 189                                   |
-| `d`    | Day in month                                                   | Number             | 10                                    |
-| `F`    | Day of week in month                                           | Number             | 2                                     |
-| `E`    | Day name in week                                               | Text               | Tuesday; Tue                          |
-| `u`    | Day number of week (1 = Monday, ..., 7 = Sunday)               | Number             | 1                                     |
-| `a`    | Am/pm marker                                                   | Text               | PM                                    |
-| `H`    | Hour in day (0-23)                                             | Number             | 0                                     |
-| `k`    | Hour in day (1-24)                                             | Number             | 24                                    |
-| `K`    | Hour in am/pm (0-11)                                           | Number             | 0                                     |
-| `h`    | Hour in am/pm (1-12)                                           | Number             | 12                                    |
-| `m`    | Minute in hour                                                 | Number             | 30                                    |
-| `s`    | Second in minute                                               | Number             | 55                                    |
-| `S`    | Millisecond                                                    | Number             | 978                                   |
-| `z`    | Time zone                                                      | General time zone  | Pacific Standard Time; PST; GMT-08:00 |
-| `Z`    | Time zone                                                      | RFC 822 time zone  | -0800                                 |
-| `X`    | Time zone                                                      | ISO 8601 time zone | -08; -0800; -08:00                    |
-| `U`    | Microsecond                                                    | Number             | 698                                   |
-| `N`    | Nanosecond                                                     | Number             | 125                                   |
+| Letter | Date or Time Component                                                | Presentation       | Examples                              |
+|--------|-----------------------------------------------------------------------|--------------------|---------------------------------------|
+| `G`    | Era designator                                                        | Text               | AD                                    |
+| `y`    | `y` single digit or greedy year, depending on the input digit number  | Year               | 1996; 96; 999; 3                      |
+| `yy`   | Two digit year of the current century                                 | Year               | 96 (interpreted as 2096)              |
+| `yyy`  | Three-digit year                                                      | Year               | 999                                   |
+| `yyyy` | Four-digit year                                                       | Year               | 1996                                  |
+| `M`    | Month in year                                                         | Month              | July; Jul; 07                         |
+| `w`    | Week in year                                                          | Number             | 27                                    |
+| `W`    | Week in month                                                         | Number             | 2                                     |
+| `D`    | Day in year                                                           | Number             | 189                                   |
+| `d`    | Day in month                                                          | Number             | 10                                    |
+| `F`    | Day of week in month                                                  | Number             | 2                                     |
+| `E`    | Day name in week                                                      | Text               | Tuesday; Tue                          |
+| `u`    | Day number of week (1 = Monday, ..., 7 = Sunday)                      | Number             | 1                                     |
+| `a`    | Am/pm marker                                                          | Text               | PM                                    |
+| `H`    | Hour in day (0-23)                                                    | Number             | 0                                     |
+| `k`    | Hour in day (1-24)                                                    | Number             | 24                                    |
+| `K`    | Hour in am/pm (0-11)                                                  | Number             | 0                                     |
+| `h`    | Hour in am/pm (1-12)                                                  | Number             | 12                                    |
+| `m`    | Minute in hour                                                        | Number             | 30                                    |
+| `s`    | Second in minute                                                      | Number             | 55                                    |
+| `S`    | Millisecond                                                           | Number             | 978                                   |
+| `z`    | Time zone                                                             | General time zone  | Pacific Standard Time; PST; GMT-08:00 |
+| `Z`    | Time zone                                                             | RFC 822 time zone  | -0800                                 |
+| `X`    | Time zone                                                             | ISO 8601 time zone | -08; -0800; -08:00                    |
+| `U`    | Microsecond                                                           | Number             | 698                                   |
+| `N`    | Nanosecond                                                            | Number             | 125                                   |
 
-### Examples
+### Examples for greedy year format `y`
 
-Consider the following examples, where we print a date using various patterns and then see
-what happens when we parse the result text using the same pattern. You will notice that some patterns are not reversible.
+The interpretation of `y` depends on the input digit number:
 
-| Pattern   | Timestamp value              | Print result |
-|-----------|------------------------------|--------------|
-| `y-MM`    | `1995-03-01T00:00:00.000000` | `1995-03`    |
-| `yy-MM`   | `1995-03-01T00:00:00.000000` | `95-03`      |
-| `yyy-MM`  | `1995-03-01T00:00:00.000000` | `995-03`     |
-| `yyyy-MM` | `1995-03-01T00:00:00.000000` | `1995-03`    |
+* If the input year is a two-digit number, the output timestamp assumes the current century, and the format acts as `yy`. 
+* Otherwise, the number is interpreted as it is, assuming a four-digit year in the output timestamp.
 
-Let's try to parse text. 
 
-| Pattern   | Text      | Parse result                 | Remarks                                      |
-|-----------|-----------|------------------------------|----------------------------------------------|
-| `y-MM`    | `1995-03` | `1995-03-01T00:00:00.000000` | year is parsed greedily until next separator |
-| `y-MM`    | `995-03`  | `0995-03-01T00:00:00.000000` | year is parsed greedily until next separator |
-| `y-MM`    | `95-03`   | `2095-03-01T00:00:00.000000` | acts as `yy`                                 |
-| `y-MM`    | `5-03`    | `0005-03-01T00:00:00.000000` | acts as `yy`                                 |
-| `yy-MM`   | `95-03`   | `2095-03-01T00:00:00.000000` | assuming current century is 2000             |
-| `yy-MM`   | `195-03`  | Invalid input                |                                              |
-| `yyy-MM`  | `995-03`  | `0995-03-01T00:00:00.000000` |                                              |
-| `yyyy-MM` | `1995-03` | `1995-03-01T00:00:00.000000` |                                              |
+| Input year | Timestamp value interpreted by `y-M`  | Notes                                                |
+|------------|---------------------------------------|------------------------------------------------------|
+| `5-03`     | `0005-03-01T00:00:00.000000Z`         | Greedily parsing the number as it is                 |
+| `05-03`    | `2005-03-01T00:00:00.000000Z`         | Greedily parsing the number assuming current century |
+| `005-03`   | `0005-03-01T00:00:00.000000Z`         | Greedily parsing the number as it is                 |
+| `0005-03`  | `0005-03-01T00:00:00.000000Z`         | Greedily parsing the number as it is                 |
 
 ### See also
 
